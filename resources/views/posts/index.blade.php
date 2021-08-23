@@ -17,8 +17,16 @@
 
         @endif
 
+        <a href="{{ route('categories.index') }}">
+            <button class="btn btn-secondary  mb-3"> See the categories</button>
+        </a>
+
         <a href="{{ route('posts.create') }}">
             <button class="btn btn-success  mb-3"> Create a new post</button>
+        </a>
+
+        <a href="{{ route('tags.index') }}">
+            <button class="btn btn-secondary  mb-3"> See the tags</button>
         </a>
 
 

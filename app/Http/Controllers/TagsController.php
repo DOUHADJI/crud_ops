@@ -14,7 +14,7 @@ class TagsController extends Controller
      */
     public function index()
     {
-        $tags = Tag::paginate(5);
+        $tags = Tag::paginate(6);
 
         return view('tags.index', compact('tags'));
     }
@@ -26,7 +26,8 @@ class TagsController extends Controller
      */
     public function create()
     {
-        //
+        return view ('tags.create');
+        
     }
 
     /**
@@ -37,7 +38,7 @@ class TagsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
