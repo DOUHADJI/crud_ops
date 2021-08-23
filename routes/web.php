@@ -20,3 +20,13 @@ Route::group(["prefix" => "posts"], function () {
     Route::post("/", [PostsController::class, "store"])->name("posts.store");
 
 });
+
+Route::group(["prefix" => "tags"], function(){
+
+    Route::get("/", [TagsController::class, "index" ]) -> name("tags.index");
+    Route::get("/create", [TagsController::class, "index" ]) -> name("tags.create");
+    Route::post("/", [TagsController::class, "index" ]) -> name("tags.store");
+    Route::patch("/create", [TagsController::class, "index" ]) -> name("tags.update");
+
+
+});
