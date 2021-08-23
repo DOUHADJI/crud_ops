@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class PostsController extends Controller
@@ -14,7 +16,15 @@ class PostsController extends Controller
      */
     public function index()
     {
+
+
         $posts = Post::latest() -> paginate(5);
+
+        $tags = Tag::where('id', '>', 0 )->get('id');
+
+
+        $posts -> tags() -> attach ($tags);
+
          
         return  view('posts.index',compact('posts'))
 
@@ -28,7 +38,9 @@ class PostsController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        $categories = Category::get();
+        $tags = Tag::get();
+        return view('posts.create', compact('categories', 'tags') );
     }
 
     /**

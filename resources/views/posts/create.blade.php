@@ -42,18 +42,42 @@
 
             <input type="text" class="form-control" name="slug" aria-describedby="Slug">
   
-          </div>
+        </div>
 
           <div class="mb-3 input-group">
 
             <label for="category" class="form-label input-group-text">Category</label>
             <select class="form-select" name="category">
-                <option selected value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+
+              @foreach ( $categories as $category )
+
+              <option selected value="1">{{$category -> nom }}</option>
+
+              @endforeach
+               
               </select>
   
           </div>
+
+          <div class="mb-3 input-group">
+
+            <label for="slug" class="form-label input-group-text">Tags</label>
+
+           
+
+              
+
+                  @foreach ($tags as $tag )
+
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                    <label class="form-check-label" for="inlineCheckbox2">{{$tag -> nom}}</label>
+                  </div>
+
+                  @endforeach
+           
+              
+        </div>
 
           <div class="mb-3 input-group">
 

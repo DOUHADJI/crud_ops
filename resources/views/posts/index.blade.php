@@ -38,6 +38,8 @@
 
             <th>slug</th>
 
+            <th>tags</th>
+
             <th>category</th>
 
             <th>View count</th>
@@ -56,7 +58,9 @@
 
             <td>{{ $post->slug }}</td>
 
-            <td>{{ $post->category }} not defined</td>
+            <td>{{$posts -> tags -> $tag ->nom}}</td>
+
+            <td>{{ $post->categories ->nom }} not defined</td>
             
             <td>{{ $post->view_count }}</td>
 
