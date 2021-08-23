@@ -1,10 +1,9 @@
-
 @extends('posts.layout')
 
 
 @section('content')
 
- <div  class="mt-3 p-3">
+<div class="mt-3 p-3">
 
     <div class="container">
 
@@ -16,94 +15,87 @@
 
         </div>
 
-    @endif
+        @endif
 
-       <a href="{{ route('posts.create') }}"> 
-            <button class="btn btn-success  mb-3"  > Create a new post</button>
+        <a href="{{ route('posts.create') }}">
+            <button class="btn btn-success  mb-3"> Create a new post</button>
         </a>
 
-       
+
 
     </div>
 
-    <div class="table">
-            
-    <table class=" table table-dark table-striped table-bordered ">
 
-        <tr>
+        <table class=" table ">
 
-            <th>No</th>
+            <tr>
 
-            <th>title</th>
+                <th>title</th>
+                <th>Categorie</th>
+                <th>Tags</th>
 
-            <th>slug</th>
+                <th>View count</th>
 
-            <th>tags</th>
+                <th>Action</th>
 
-            <th>category</th>
+            </tr>
 
-            <th>View count</th>
+            @foreach ($posts as $post)
 
-            <th>Action</th>
+            <tr>
 
-        </tr>
+                <td>{{ $post->title }}</td>
+                <td>{{ $post->category->nom }}</td>
 
-        @foreach ($posts as $post)
-
-        <tr>
-
-            <td>{{ ++$i }}</td>
-
-            <td>{{ $post->title }}</td>
-
-            <td>{{ $post->slug }}</td>
-
-            <td>{{$posts -> tags -> $tag ->nom}}</td>
-
-            <td>{{ $post->categories ->nom }} not defined</td>
-            
-            <td>{{ $post->view_count }}</td>
+                <td>
+                    @foreach ($post->tags as $tag)
+                    <span class="badge bg-primary">{{ $tag->nom }}</span>
+                    @endforeach
+                </td>
 
 
-            <td>
+                <td>{{ $post->view_count }}</td>
 
-                <form action="{{ route('posts.destroy',$post->id) }}" method="POST">
 
-   
+                <td>
+
+                    {{-- <form action="{{ route('posts.destroy',$post->id) }}" method="POST">
+
+
 
                     <a class="btn btn-info m-3 " href="{{ route('posts.show',$post->id) }}">Show</a>
 
-    
+
 
                     <a class="btn btn-primary m-3" href="{{ route('posts.edit',$post->id) }}">Edit</a>
 
-   
+
 
                     @csrf
 
                     @method('DELETE')
 
-      
+
 
                     <button type="submit" class="btn btn-danger m-3">Delete</button>
 
-                </form>
+                    </form> --}}
 
-            </td>
+                </td>
 
-        </tr>
+            </tr>
 
-        @endforeach
+            @endforeach
 
-    </table>
-  
+        </table>
 
-  
 
-    {!! $posts->links() !!}
+
+
+        {!! $posts->links() !!}
     </div>
 
-    
+
 
 </div>
 

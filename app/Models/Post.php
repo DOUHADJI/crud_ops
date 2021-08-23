@@ -4,21 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title' , 'slug', 'content'
+        'title', 'slug', 'content', "category_id",
     ];
 
     protected $table = "posts";
 
-    public function tags() {
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 
-            return  $this -> belongsToMany(Tag::class, 'post_tag');
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
 }

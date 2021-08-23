@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Post;
 use App\Models\Tag;
+use App\Models\Post;
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class PostsController extends Controller
@@ -18,17 +19,8 @@ class PostsController extends Controller
     {
 
 
-        $posts = Post::latest() -> paginate(5);
-
-        $tags = Tag::where('id', '>', 0 )->get('id');
-
-
-        $posts -> tags() -> attach ($tags);
-
-         
-        return  view('posts.index',compact('posts'))
-
-        ->with('i', (request()->input('page', 1) - 1) * 5);
+        $posts = Post::with(["tags", "category"])->paginate(2);
+        return  view('posts.index', compact('posts'));
     }
 
     /**
@@ -52,16 +44,18 @@ class PostsController extends Controller
     public function store(Request $request)
     {
         $request -> validate([
-            'title' => 'required',
-            'slug' => 'required',
-            'category' => 'required',
-            'content' => 'required',
-            
-
+            'title' => ["required"],
+            'category_id' => ["required", "integer", "exists:categories,id"],
+            'content' => ["required"],
         ]);
 
-        Post::create($request ->all() );
-
+        $post = Post::create([
+            "title" => $request->title,
+            "slug" => Str::slug($request->title),
+            "category_id" => $request->category_id,
+            "content" => $request->content
+        ]);
+        $post->tags()->sync($request->tags);
         return redirect() -> route('posts.index') -> with('success', 'Post created successfully');
 
     }
@@ -75,7 +69,7 @@ class PostsController extends Controller
     public function show(Post $post)
     {
         return view('posts.show', compact('post'));
-        
+
     }
 
     /**
@@ -108,7 +102,7 @@ class PostsController extends Controller
             $post->update($request->all() );
 
         return redirect()-> route('posts.index') -> with('sucess', 'Post updated successfully');
-        
+
     }
 
     /**
@@ -120,7 +114,7 @@ class PostsController extends Controller
     public function destroy(Post $post)
     {
 
-        $post->delete();  
+        $post->delete();
 
         return redirect()->route('posts.index')
 
