@@ -43,17 +43,21 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
+
         $request -> validate([
             'title' => ["required"],
             'category_id' => ["required", "integer", "exists:categories,id"],
             'content' => ["required"],
+            "img_path" => ["required", "image"]
         ]);
-
+        $imgPath = $request->img_path->store("posts");
+        
         $post = Post::create([
             "title" => $request->title,
             "slug" => Str::slug($request->title),
             "category_id" => $request->category_id,
-            "content" => $request->content
+            "content" => $request->content,
+            "img_path" => $imgPath,
         ]);
         $post->tags()->sync($request->tags);
         return redirect() -> route('posts.index') -> with('success', 'Post created successfully');
@@ -115,9 +119,7 @@ class PostsController extends Controller
     {
 
         $post->delete();
-
         return redirect()->route('posts.index')
-
-                        ->with('success','Product deleted successfully');
+            ->with('success','Product deleted successfully');
     }
 }

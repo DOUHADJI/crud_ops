@@ -37,21 +37,21 @@
         <table class=" table ">
 
             <tr>
-
+                <th>Image</th>
                 <th>title</th>
                 <th>Categorie</th>
                 <th>Tags</th>
 
                 <th>View count</th>
 
-                <th>Action</th>
+                <th>Actions</th>
 
             </tr>
 
             @foreach ($posts as $post)
 
             <tr>
-
+                <td><img src="{{ $post->fullImgPath }}" height="40" alt="" srcset=""></td>
                 <td>{{ $post->title }}</td>
                 <td>{{ $post->category->nom }}</td>
 
@@ -66,29 +66,12 @@
 
 
                 <td>
-
-                    {{-- <form action="{{ route('posts.destroy',$post->id) }}" method="POST">
-
-
-
-                    <a class="btn btn-info m-3 " href="{{ route('posts.show',$post->id) }}">Show</a>
-
-
-
-                    <a class="btn btn-primary m-3" href="{{ route('posts.edit',$post->id) }}">Edit</a>
-
-
-
-                    @csrf
-
-                    @method('DELETE')
-
-
-
-                    <button type="submit" class="btn btn-danger m-3">Delete</button>
-
-                    </form> --}}
-
+                    <form action="{{ route("posts.destroy", $post) }}" method="post">
+                        @csrf
+                        @method("DELETE")
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                    <a class="btn btn-primary" href="">Editer</a>
                 </td>
 
             </tr>

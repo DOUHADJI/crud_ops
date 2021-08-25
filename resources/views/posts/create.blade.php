@@ -6,56 +6,36 @@
 
     <P class=" fs-1 fw-bold mt-5">Create a new post</P>
 
-    @if ($errors->any())
-
-    <div class="alert alert-danger">
-
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-
-        <ul>
-
-            @foreach ($errors->all() as $error)
-
-            <li>{{ $error }}</li>
-
-            @endforeach
-
-        </ul>
-
-    </div>
-
-    @endif
-
-    <form class="mt-5" action="{{ route('posts.store')}}" method="POST">
+    <form class="mt-5" action="{{ route('posts.store')}}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        <div class="mb-3 input-group ml-auto">
+        <div class="form-group">
 
-            <label for="title" class="form-label input-group-text">Title</label>
-            <input type="text" class="form-control" name="title" aria-describedby="Title">
-
+            <label for="title">Title</label>
+            <input type="text" class="form-control @error("title") is-invalid @enderror" name="title" value="{{ old("title") }}">
+            @error("title")
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+            @enderror
         </div>
+        <div class="form-group">
 
-        <div class="mb-3 input-group">
-
-            <label for="slug" class="form-label input-group-text">Slug</label>
-
-            <input type="text" class="form-control" name="slug" aria-describedby="Slug">
-
-        </div>
-
-        <div class="mb-3 input-group">
-
-            <label for="category" class="form-label input-group-text">Category</label>
-            <select class="form-select" name="category_id">
-
+            <label for="category">Category</label>
+            <select class="form-control @error("category_id") is-invalid @enderror" name="category_id">
+                <option value="0">-- Choix --</option>
                 @foreach ( $categories as $category )
 
-                <option selected value="1">{{$category -> nom }}</option>
+                <option value="{{$category->id }}">{{$category->nom }}</option>
 
                 @endforeach
 
             </select>
+            @error("category_id")
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+            @enderror
 
         </div>
 
@@ -64,9 +44,14 @@
             <select class="form-control" name="tags[]" id="tags" multiple>
                 <option>-- Choix --</option>
                 @foreach ($tags as $tag)
-                    <option value="{{ $tag->id }}">{{ $tag->nom }}</option>
+                <option value="{{ $tag->id }}">{{ $tag->nom }}</option>
                 @endforeach
             </select>
+        </div>
+
+        <div class="form-group">
+            <label for="img">Choisir une image</label>
+            <input type="file" class="form-control" name="img_path" id="img">
         </div>
 
         <div class="mb-3 input-group">

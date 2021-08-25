@@ -20,6 +20,7 @@ Route::group(["prefix" => "posts"], function () {
     Route::get("/", [PostsController::class, "index"])->name("posts.index");
     Route::get("/create", [PostsController::class, "create"])->name("posts.create");
     Route::post("/", [PostsController::class, "store"])->name("posts.store");
+    Route::delete("/{post}", [PostsController::class, "destroy"])->name("posts.destroy");
 
 });
 
