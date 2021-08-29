@@ -16,11 +16,24 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+ 
+
 Route::group(["prefix" => "posts"], function () {
+
     Route::get("/", [PostsController::class, "index"])->name("posts.index");
+
     Route::get("/create", [PostsController::class, "create"])->name("posts.create");
+
     Route::post("/", [PostsController::class, "store"])->name("posts.store");
+
+    Route::get("/edit/{post}", [PostsController::class, "edit"])->name("posts.edit");
+
+    Route::post("/update/{post}", [PostsController::class, "update"])->name("posts.update");
+
     Route::delete("/{post}", [PostsController::class, "destroy"])->name("posts.destroy");
+
+
+
 
 });
 
@@ -30,7 +43,6 @@ Route::group(["prefix" => "tags"], function(){
     Route::get("/create", [TagsController::class, "create" ]) -> name("tags.create");
     Route::post("/", [TagsController::class, "store" ]) -> name("tags.store");
 
-    Route::patch("/create", [TagsController::class, "update" ]) -> name("tags.update");
 
 
 });

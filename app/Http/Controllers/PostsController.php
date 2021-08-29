@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tag;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\post_tag;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class PostsController extends Controller
     {
 
 
-        $posts = Post::with(["tags", "category"])->paginate(2);
+        $posts = Post::with(["tags", "category"])->paginate(6);
         return  view('posts.index', compact('posts'));
     }
 
@@ -43,6 +44,8 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
+
+        
 
         $request -> validate([
             'title' => ["required"],
@@ -84,7 +87,12 @@ class PostsController extends Controller
      */
     public function edit(Post $post)
     {
-            return view('posts.edit', compact('post'));
+      
+        $tags = Tag::get();
+        $categories = Category::get();
+         $posts_tags = post_tag::get();
+
+            return view('posts.edit', compact('post', 'tags', 'categories', 'posts_tags'));
     }
 
     /**
@@ -96,14 +104,30 @@ class PostsController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+
+        
+
         $request -> validate([
             'title' => 'required',
             'slug' => 'required',
-            'category' => 'required',
+            'category_id' => 'required',
             'content' => 'required',
+            'img_path' => 'required'
             ]);
 
-            $post->update($request->all() );
+            $imgPath = $request->img_path->store("posts");
+
+            $post-> title = $request->title;
+            $post-> slug = Str::slug($request->title);
+            $post->category_id = $request->category_id;
+            $post->content = $request->content;
+            $post-> img_path  = $imgPath;
+
+            $post->save();
+
+        $post->tags()->sync($request->tags);
+
+        dd($post);
 
         return redirect()-> route('posts.index') -> with('sucess', 'Post updated successfully');
 

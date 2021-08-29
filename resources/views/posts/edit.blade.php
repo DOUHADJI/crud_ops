@@ -2,80 +2,160 @@
 
 @section('content')
 
-<div class="container  ">
+<div class="container pt-5">
 
-    <P class=" fs-1 fw-bold mt-5">Edit the post</P>
+    <span class="border border-dark  fs-3 fw-bold mt-3 "><span class="m-1 p-2  bg-primary text-white">Edit the post</span></span>
 
-    @if ($errors->any())
+    
 
-    <div class="alert alert-danger">
-
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-
-        <ul>
-
-            @foreach ($errors->all() as $error)
-
-                <li>{{ $error }}</li>
-
-            @endforeach
-
-        </ul>
-
-    </div>
-
-@endif
-
-    <form class="mt-5" action="{{ route('posts.update', $post ->id )}}" method="POST">
+    <form class="mt-5 p-3 bg-light rounded" action="{{ route('posts.update', $post )}}"  method="POST" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
+        
+
+        <div class="form-group">
+
+            <div class="row">
+
+                <div class="col">
+
+                    <label for="img" class="fs-4 fst-italic text-primary">Choisir une image</label>
+                    <input type="file" class="form-control @error("img_path") is-invalid @enderror" name="img_path" id="img" value="" >
+
+                    @error("img_path")
+                        <div class="invalid-feedback">{{$message}}</div>
+                    @enderror
+
+                </div>
+
+                <div class="col">
+                  
+                    <label for="title" class="fs-4 fst-italic text-primary">Title</label>
+                    <input type="text" class="form-control @error("title") is-invalid @enderror" name="title" value="{{ $post->title }}">
+                    
+                    @error("title")
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
+
+                </div>
+
+                <div class="col">
+                  
+                        <label for="category" class="fs-4 fst-italic text-primary ">Category</label>
+                        <select class="form-control @error("category_id") is-invalid @enderror" name="category_id">
+                            <option value="0">-- Choix --</option>
+                            @foreach ( $categories as $category )
+
+                            <option 
+                            
+                            @if($post->category_id == $category->id)
+                              selected
+                            @endif
+                            
+                            value="{{$category->id }}">{{$category->nom }}</option>
+
+                            @endforeach
+
+                        </select>
+                        @error("category_id")
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                </div>
+
+              
+
+              </div>
+
+          
 
 
-        <div class="mb-3 input-group ml-auto">
-
-          <label for="title" class="form-label input-group-text">Title</label>
-          <input type="text" class="form-control" name="title" aria-describedby="Title" value="{{ $post->title}}">
 
         </div>
 
-        <div class="mb-3 input-group">
 
-            <label for="slug" class="form-label input-group-text">Slug</label>
-
-            <input type="text" class="form-control" name="slug" aria-describedby="Slug" value="{{ $post->slug}}">
-  
-          </div>
-
-          <div class="mb-3 input-group">
-
-            <label for="category" class="form-label input-group-text">Category</label>
-            <select class="form-select" name="category">
-                <option selected value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-  
-          </div>
-
-          <div class="mb-3 input-group">
-
-            <label for="content" class="form-label input-group-text">Content</label>
-            <textarea class="form-control" aria-label="With textarea" name="content" value="{{ $post->content}}">{{ $post->content}}</textarea>
-
-  
-          </div>
-
-        <a class="btn btn-dark " href="{{ route('posts.index') }}">Back</a>
-
-       
-        <button type="submit" class="btn btn-success">Modifier</button>
+        <div class="form-group">
 
 
+            <div class="row mt-5">
 
-      </form>
-    
+                <div class="col-4">
+
+                    <label for="tags" class="fs-4 fst-italic text-primary input-group-text form-label">Selectionner une ou plrs tags</label>
+                    <select class="form-control @error("tags[]") is-invalid @enderror" name="tags[]" id="tags" multiple >
+                        <option>-- Choix --</option> 
+
+                        @foreach ($tags as $tag )
+                        <option 
+                        
+                        @foreach ($post->tags as $t )
+                          @if($t->id == $tag->id)
+                            selected
+                          @endif
+                        @endforeach
+                        value="{{ $tag->id }}">{{ $tag->nom }}</option>
+                        @endforeach
+
+                       
+                    </select>
+
+                    @error("tags[]")
+                    <div class="invalid-feedback">{{$message}}</div>
+                    @enderror
+
+
+                </div>
+
+                <div class="col-8">
+                  
+                    <label for="content" class="form-label input-group-text fs-4 fst-italic text-primary">Content</label>
+                    <textarea class="form-control @error("content") is-invalid @enderror" aria-label="With textarea" name="content">{{$post->content}}</textarea>
+
+                    @error("content")
+                        <div class="invalid-feedback">
+                            {{$message}}
+                        </div>
+                    @enderror
+
+                </div>
+
+              
+
+              </div>
+
+          
+
+
+
+        </div>
+
+          
+          
+        </div>
+
+        <div class="container mt-5">
+
+                
+            <a class="btn btn-dark  m-2" href="{{ route('posts.index') }}"> Back</a>
+
+        <button type="submit" class="btn btn-success">Edit the post</button>
+
+
+
+
+        </div>
+
+
+
+
+    </form>
+
 </div>
 
 
-  
+
+
+
 @endsection
