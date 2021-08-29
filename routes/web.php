@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
- 
+
 
 Route::group(["prefix" => "posts"], function () {
 
@@ -28,7 +28,7 @@ Route::group(["prefix" => "posts"], function () {
 
     Route::get("/edit/{post}", [PostsController::class, "edit"])->name("posts.edit");
 
-    Route::post("/update/{post}", [PostsController::class, "update"])->name("posts.update");
+    Route::patch("/update/{post}", [PostsController::class, "update"])->name("posts.update");
 
     Route::delete("/{post}", [PostsController::class, "destroy"])->name("posts.destroy");
 

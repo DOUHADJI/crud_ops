@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\post_tag;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\PostUpdateRequest;
 
 class PostsController extends Controller
 {
@@ -19,9 +21,8 @@ class PostsController extends Controller
     public function index()
     {
 
-
         $posts = Post::with(["tags", "category"])->paginate(6);
-        return  view('posts.index', compact('posts'));
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -33,7 +34,7 @@ class PostsController extends Controller
     {
         $categories = Category::get();
         $tags = Tag::get();
-        return view('posts.create', compact('categories', 'tags') );
+        return view('posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -45,16 +46,14 @@ class PostsController extends Controller
     public function store(Request $request)
     {
 
-        
-
-        $request -> validate([
+        $request->validate([
             'title' => ["required"],
             'category_id' => ["required", "integer", "exists:categories,id"],
             'content' => ["required"],
-            "img_path" => ["required", "image"]
+            "img_path" => ["required", "image"],
         ]);
         $imgPath = $request->img_path->store("posts");
-        
+
         $post = Post::create([
             "title" => $request->title,
             "slug" => Str::slug($request->title),
@@ -63,7 +62,7 @@ class PostsController extends Controller
             "img_path" => $imgPath,
         ]);
         $post->tags()->sync($request->tags);
-        return redirect() -> route('posts.index') -> with('success', 'Post created successfully');
+        return redirect()->route('posts.index')->with('success', 'Post created successfully');
 
     }
 
@@ -87,12 +86,12 @@ class PostsController extends Controller
      */
     public function edit(Post $post)
     {
-      
+
         $tags = Tag::get();
         $categories = Category::get();
-         $posts_tags = post_tag::get();
+        $posts_tags = post_tag::get();
 
-            return view('posts.edit', compact('post', 'tags', 'categories', 'posts_tags'));
+        return view('posts.edit', compact('post', 'tags', 'categories', 'posts_tags'));
     }
 
     /**
@@ -102,34 +101,21 @@ class PostsController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostUpdateRequest $request, Post $post)
     {
-
-        
-
-        $request -> validate([
-            'title' => 'required',
-            'slug' => 'required',
-            'category_id' => 'required',
-            'content' => 'required',
-            'img_path' => 'required'
-            ]);
-
+        $imgPath = null;
+        if($request->hasFile("img_path")) {
             $imgPath = $request->img_path->store("posts");
-
-            $post-> title = $request->title;
-            $post-> slug = Str::slug($request->title);
-            $post->category_id = $request->category_id;
-            $post->content = $request->content;
-            $post-> img_path  = $imgPath;
-
-            $post->save();
-
+            Storage::delete($post->img_path);
+        }
+        $post->update([
+            "title" => $request->title,
+            "category_id" => $request->category_id,
+            "content" => $request->content,
+            "img_path" => $imgPath ? $imgPath : $post->img_path,
+        ]);
         $post->tags()->sync($request->tags);
-
-        dd($post);
-
-        return redirect()-> route('posts.index') -> with('sucess', 'Post updated successfully');
+        return redirect()->route('posts.index')->with('sucess', 'Post updated successfully');
 
     }
 
@@ -144,6 +130,6 @@ class PostsController extends Controller
 
         $post->delete();
         return redirect()->route('posts.index')
-            ->with('success','Product deleted successfully');
+            ->with('success', 'Product deleted successfully');
     }
 }
