@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
-use App\Models\Post;
+use App\Http\Requests\PostUpdateRequest;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\post_tag;
-use Illuminate\Support\Str;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\PostUpdateRequest;
+use Illuminate\Support\Str;
 
 class PostsController extends Controller
 {
@@ -21,8 +21,19 @@ class PostsController extends Controller
     public function index()
     {
 
-        $posts = Post::with(["tags", "category"])->paginate(6);
-        return view('posts.index', compact('posts'));
+        $categoryId = request()->input("category_id");
+        $tags = request("tags");
+
+        $posts = Post::when($categoryId, function ($query) use ($categoryId) {
+            $query->where("category_id", $categoryId);
+        })->when($tags, function ($query) use ($tags) {
+            $query->whereHas("tags", function ($query) use ($tags) {
+                $query->whereIn("tag_id", $tags);
+            });
+        })->with(["tags", "category"])->paginate(6);
+        $categories = Category::get();
+        $tags = Tag::get();
+        return view('posts.index', compact('posts', "categories", "tags"));
     }
 
     /**
@@ -104,7 +115,7 @@ class PostsController extends Controller
     public function update(PostUpdateRequest $request, Post $post)
     {
         $imgPath = null;
-        if($request->hasFile("img_path")) {
+        if ($request->hasFile("img_path")) {
             $imgPath = $request->img_path->store("posts");
             Storage::delete($post->img_path);
         }
