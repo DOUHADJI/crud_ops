@@ -50,23 +50,23 @@
               <p class="card-text">{{$post->content}}</p>
             </div>
             <div class="card-footer">
-  
+
               <small class="text-muted">
                 @foreach ($post->tags as $tag)
                   <span class="badge bg-primary">{{ $tag->nom }}</span>
                   @endforeach
               </small>
                <hr>
-  
+
               <small class="container-fluid">
                 <div class="row">
                   <div class="col">
-  
+
                   <a class="btn btn-secondary" href="{{route("posts.edit", $post )}}">Edit</a>
-  
+
                   </div>
-  
-  
+
+
                   <div class="col">
                      <form action="{{ route("posts.destroy", $post) }}" method="post">
                       @csrf
@@ -75,15 +75,15 @@
                     </form>
                   </div>
                 </div>
-                   
+
               </small>
-  
+
             </div>
           </div>
         </div>
 
       @endforeach
-      
+
       </div>
     </div>
 
@@ -92,7 +92,14 @@
         {!! $posts->links() !!}
     </div>
 
-    
+
+
+    <form action="{{ route("auth.logout") }}" method="post">
+        @csrf
+        <button type="submit" class="btn btn-danger">Se deconnecter</button>
+    </form>
+    {{ auth()->user()->name }}
+    ({{ auth()->user()->email }})
 
 
 
